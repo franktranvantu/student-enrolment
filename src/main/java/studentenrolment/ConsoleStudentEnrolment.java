@@ -8,29 +8,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
 
   private static final Scanner SCANNER = new Scanner(System.in);
-  private static final List<StudentEnrolment> STUDENT_ENROLMENTS = new ArrayList<>();
   private static final StudentDao STUDENT_DAO = new StudentDao();
   private static final CourseDao COURSE_DAO = new CourseDao();
+  private static List<StudentEnrolment> studentEnrolments = new ArrayList<>();
 
   @Override
   public void add(StudentEnrolment studentEnrolment) {
-    STUDENT_ENROLMENTS.add(studentEnrolment);
+    studentEnrolments.add(studentEnrolment);
   }
 
   @Override
   public void update(int enrolmentId, StudentEnrolment studentEnrolment) {
     StudentEnrolment existedEnrolment = getOne(enrolmentId);
     if (existedEnrolment != null) {
-      int index = STUDENT_ENROLMENTS.indexOf(existedEnrolment);
+      int index = studentEnrolments.indexOf(existedEnrolment);
       StudentEnrolment enrolment = new StudentEnrolment(studentEnrolment);
-      STUDENT_ENROLMENTS.set(index, enrolment);
+      studentEnrolments.set(index, enrolment);
     }
   }
 
@@ -38,13 +37,18 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
   public void delete(int enrolmentId) {
     StudentEnrolment existedEnrolment = getOne(enrolmentId);
     if (existedEnrolment != null) {
-      STUDENT_ENROLMENTS.remove(existedEnrolment);
+      studentEnrolments.remove(existedEnrolment);
     }
   }
 
   @Override
+  public void deleteByCourseId(int courseId) {
+    studentEnrolments = studentEnrolments.stream().filter(studentEnrolment -> studentEnrolment.getCourse().getId() != courseId).collect(Collectors.toList());
+  }
+
+  @Override
   public StudentEnrolment getOne(int enrolmentId) {
-    return STUDENT_ENROLMENTS.stream()
+    return studentEnrolments.stream()
         .filter(enrolment -> enrolment.getId() == enrolmentId)
         .parallel()
         .findAny()
@@ -53,7 +57,7 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
 
   @Override
   public StudentEnrolment getOneByStudentAndCourseAndSemester(int studentId, int courseId, String semester) {
-    return STUDENT_ENROLMENTS.stream()
+    return studentEnrolments.stream()
             .filter(studentEnrolment ->
                     studentEnrolment.getStudent().getId() == studentId
                     && studentEnrolment.getSemester().equalsIgnoreCase(semester)
@@ -65,7 +69,7 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
 
   @Override
   public List<StudentEnrolment> getAll() {
-    return STUDENT_ENROLMENTS;
+    return studentEnrolments;
   }
 
   @Override
@@ -73,7 +77,7 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
     List<Student> students = STUDENT_DAO.getAll();
 
     students.stream().forEach(student -> {
-      Map<String, List<Course>> semesters = STUDENT_ENROLMENTS.stream()
+      Map<String, List<Course>> semesters = studentEnrolments.stream()
               .filter(studentEnrolment -> studentEnrolment.getStudent().getId() == student.getId())
               .collect(Collectors.groupingBy(
                       StudentEnrolment::getSemester,
@@ -92,7 +96,7 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
   @Override
   public void printAllCoursesForSpecificStudentInSpecificSemester(int studentId, String semester) {
     Student student = STUDENT_DAO.getOne(studentId);
-    List<Course> courses = STUDENT_ENROLMENTS.stream()
+    List<Course> courses = studentEnrolments.stream()
             .filter(studentEnrolment -> studentEnrolment.getStudent().getId() == studentId && studentEnrolment.getSemester().equalsIgnoreCase(semester))
             .map(StudentEnrolment::getCourse)
             .collect(Collectors.toList());
@@ -127,7 +131,7 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
     List<Course> courses = COURSE_DAO.getAll();
 
     courses.stream().forEach(course -> {
-      Map<String, List<Student>> semesters = STUDENT_ENROLMENTS.stream()
+      Map<String, List<Student>> semesters = studentEnrolments.stream()
               .filter(studentEnrolment -> studentEnrolment.getCourse().getId() == course.getId())
               .collect(Collectors.groupingBy(
                       StudentEnrolment::getSemester,
@@ -146,7 +150,7 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
   @Override
   public void printAllStudentsOfSpecificCourseInSpecificSemester(int courseId, String semester) {
     Course course = COURSE_DAO.getOne(courseId);
-    List<Student> students = STUDENT_ENROLMENTS.stream()
+    List<Student> students = studentEnrolments.stream()
             .filter(studentEnrolment -> studentEnrolment.getCourse().getId() == courseId && studentEnrolment.getSemester().equalsIgnoreCase(semester))
             .map(StudentEnrolment::getStudent)
             .collect(Collectors.toList());
@@ -183,7 +187,7 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
 
   @Override
   public void printAllCoursesOfferedInSpecificSemester(String semester) {
-    List<Course> courses = STUDENT_ENROLMENTS.stream()
+    List<Course> courses = studentEnrolments.stream()
             .filter(studentEnrolment -> studentEnrolment.getSemester().equalsIgnoreCase(semester))
             .map(StudentEnrolment::getCourse)
             .collect(Collectors.toList());

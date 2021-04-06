@@ -59,4 +59,15 @@ public class MainTest {
         StudentEnrolment newEnrolment = studentEnrolmentManager.getOne(enrolment.getId());
         assertEquals("Course 2", newEnrolment.getCourse().getName());
     }
+
+    @Test
+    public void testEnrolmentWhenDeleteEnrolment() {
+        Student student = studentDao.getOne(1);
+        Course course = courseDao.getOne(1);
+        String semester = "2021A";
+        studentEnrolmentManager.add(new StudentEnrolment(student, course, semester));
+        studentEnrolmentManager.deleteByCourseId(1);
+        StudentEnrolment enrolment = studentEnrolmentManager.getOneByStudentAndCourseAndSemester(student.getId(), course.getId(), semester);
+        assertEquals(null, enrolment);
+    }
 }

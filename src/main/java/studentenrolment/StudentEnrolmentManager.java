@@ -10,6 +10,8 @@ public interface StudentEnrolmentManager {
 
   void delete(int enrolmentId);
 
+  void deleteByCourseId(int courseId);
+
   StudentEnrolment getOne(int enrolmentId);
 
   StudentEnrolment getOneByStudentAndCourseAndSemester(int studentId, int courseId, String semester);

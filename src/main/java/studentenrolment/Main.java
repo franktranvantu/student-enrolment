@@ -20,7 +20,7 @@ public class Main {
             System.out.println("3. Print all courses offered in 1 semester");
             System.out.println("4. Enroll a student for 1 semester");
             System.out.println("5. Update an enrolment of a student for 1 semester");
-            System.out.println("6. Export all courses for 1 student in 1 semester to CSV");
+            System.out.println("6. Delete an enrolment of a student for 1 semester");
             System.out.println("0. Exit");
             System.out.print("Enter your choose: ");
             choose = Integer.parseInt(SCANNER.nextLine());
@@ -80,6 +80,16 @@ public class Main {
                     studentEnrolment.setCourse(newCourse);
                     ENROLMENT_MANAGER.update(enrolmentId, studentEnrolment);
                     break;
+                case 6:
+                    System.out.println("=========== Delete an enrolment of a student for 1 semester ==========");
+                    System.out.print("\tEnter student id: ");
+                    studentId = Integer.parseInt(SCANNER.nextLine());
+                    System.out.print("\tEnter semester: ");
+                    semester = SCANNER.nextLine();
+                    ENROLMENT_MANAGER.printAllCoursesForSpecificStudentInSpecificSemester(studentId, semester);
+                    System.out.print("\tEnter course id: ");
+                    courseId = Integer.parseInt(SCANNER.nextLine());
+                    ENROLMENT_MANAGER.deleteByCourseId(courseId);
             }
         } while (choose != 0);
     }
