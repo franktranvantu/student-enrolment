@@ -20,6 +20,7 @@ public class Main {
             System.out.println("3. Print all courses offered in 1 semester");
             System.out.println("4. Enroll a student for 1 semester");
             System.out.println("5. Update an enrolment of a student for 1 semester");
+            System.out.println("6. Export all courses for 1 student in 1 semester to CSV");
             System.out.println("0. Exit");
             System.out.print("Enter your choose: ");
             choose = Integer.parseInt(SCANNER.nextLine());
@@ -80,7 +81,6 @@ public class Main {
                     ENROLMENT_MANAGER.update(enrolmentId, studentEnrolment);
                     break;
             }
-
         } while (choose != 0);
     }
 }
