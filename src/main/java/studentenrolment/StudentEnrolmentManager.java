@@ -12,7 +12,19 @@ public interface StudentEnrolmentManager {
 
   StudentEnrolment getOne(int enrolmentId);
 
+  StudentEnrolment getOneByStudentAndCourseAndSemester(int studentId, int courseId, String semester);
+
   List<StudentEnrolment> getAll();
 
   void printAllCoursesForStudentInSemester();
+
+  void printAllCoursesForSpecificStudentInSpecificSemester(int studentId, String semester);
+
+  void printAllStudentsOfCourseInSemester();
+
+  void printAllStudentsOfSpecificCourseInSpecificSemester(int courseId, String semester);
+
+  void printAllCoursesOfferedInSemester();
+
+  void printAllCoursesOfferedInSpecificSemester(String semester);
 }

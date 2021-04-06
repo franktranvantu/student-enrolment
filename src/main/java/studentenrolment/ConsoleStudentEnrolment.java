@@ -44,6 +44,18 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
   }
 
   @Override
+  public StudentEnrolment getOneByStudentAndCourseAndSemester(int studentId, int courseId, String semester) {
+    return STUDENT_ENROLMENTS.stream()
+            .filter(studentEnrolment ->
+                    studentEnrolment.getStudent().getId() == studentId
+                    && studentEnrolment.getSemester().equalsIgnoreCase(semester)
+                    && studentEnrolment.getCourse().getId() == courseId)
+            .parallel()
+            .findAny()
+            .orElse(null);
+  }
+
+  @Override
   public List<StudentEnrolment> getAll() {
     return STUDENT_ENROLMENTS;
   }
@@ -67,5 +79,68 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
         COURSE_DAO.print(semester.getValue());
       });
     });
+  }
+
+  @Override
+  public void printAllCoursesForSpecificStudentInSpecificSemester(int studentId, String semester) {
+    Student student = STUDENT_DAO.getOne(studentId);
+    List<Course> courses = STUDENT_ENROLMENTS.stream()
+            .filter(studentEnrolment -> studentEnrolment.getStudent().getId() == studentId && studentEnrolment.getSemester().equalsIgnoreCase(semester))
+            .map(StudentEnrolment::getCourse)
+            .collect(Collectors.toList());
+    System.out.println("============================================================");
+    System.out.printf("Student Id: %s, Student Name: %s, Birthday: %s%n", student.getId(), student.getName(), student.getBirthday());
+    System.out.printf("Semester: %s%n", semester);
+    COURSE_DAO.print(courses);
+  }
+
+  @Override
+  public void printAllStudentsOfCourseInSemester() {
+    List<Course> courses = COURSE_DAO.getAll();
+
+    courses.stream().forEach(course -> {
+      Map<String, List<Student>> semesters = STUDENT_ENROLMENTS.stream()
+              .filter(studentEnrolment -> studentEnrolment.getCourse().getId() == course.getId())
+              .collect(Collectors.groupingBy(
+                      StudentEnrolment::getSemester,
+                      Collectors.mapping(StudentEnrolment::getStudent, Collectors.toList()))
+              );
+      System.out.println("============================================================");
+      System.out.printf("Course Id: %s, Course Name: %s, Credit Number: %s%n", course.getId(), course.getName(), course.getCreditNumber());
+      semesters.entrySet().stream().forEach(semester -> {
+        String semesterName = semester.getKey();
+        System.out.printf("Semester: %s%n", semesterName);
+        STUDENT_DAO.print(semester.getValue());
+      });
+    });
+  }
+
+  @Override
+  public void printAllStudentsOfSpecificCourseInSpecificSemester(int courseId, String semester) {
+    Course course = COURSE_DAO.getOne(courseId);
+    List<Student> students = STUDENT_ENROLMENTS.stream()
+            .filter(studentEnrolment -> studentEnrolment.getCourse().getId() == courseId && studentEnrolment.getSemester().equalsIgnoreCase(semester))
+            .map(StudentEnrolment::getStudent)
+            .collect(Collectors.toList());
+    System.out.println("============================================================");
+    System.out.printf("Course Id: %s, Course Name: %s, Credit Number: %s%n", course.getId(), course.getName(), course.getCreditNumber());
+    System.out.printf("Semester: %s%n", semester);
+    STUDENT_DAO.print(students);
+  }
+
+  @Override
+  public void printAllCoursesOfferedInSemester() {
+
+  }
+
+  @Override
+  public void printAllCoursesOfferedInSpecificSemester(String semester) {
+    List<Course> courses = STUDENT_ENROLMENTS.stream()
+            .filter(studentEnrolment -> studentEnrolment.getSemester().equalsIgnoreCase(semester))
+            .map(StudentEnrolment::getCourse)
+            .collect(Collectors.toList());
+    System.out.println("============================================================");
+    System.out.printf("Semester: %s%n", semester);
+    COURSE_DAO.print(courses);
   }
 }

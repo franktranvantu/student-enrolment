@@ -29,12 +29,12 @@ public class StudentDao {
             .orElse(null);
   }
 
-  public void printAll() {
+  public void print(List<Student> students) {
     System.out.println("========== List of students ==========");
     String[] headers = new String[] {"Student Id", "Student Name", "Birthday"};
-    Object[][] data = new Object[STUDENTS.size()][headers.length];
-    for (int i = 0; i < STUDENTS.size(); i++) {
-      Student student = STUDENTS.get(i);
+    Object[][] data = new Object[students.size()][headers.length];
+    for (int i = 0; i < students.size(); i++) {
+      Student student = students.get(i);
       data[i][0] = student.getId();
       data[i][1] = student.getName();
       data[i][2] = student.getBirthday();
