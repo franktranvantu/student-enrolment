@@ -26,7 +26,5 @@ public interface StudentEnrolmentManager {
 
   void printAllStudentsOfSpecificCourseInSpecificSemester(int courseId, String semester);
 
-  void printAllCoursesOfferedInSemester();
-
   void printAllCoursesOfferedInSpecificSemester(String semester);
 }

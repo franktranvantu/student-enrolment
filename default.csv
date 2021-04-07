@@ -1,0 +1,6 @@
+Student Id,Student Name,Birthday,Course Id,Course Name,Credit Number,Semester
+1,Student 1,2020-01-01,1,Course 1,1111-1111-1111-1111,2021A
+1,Student 1,2020-01-01,2,Course 2,2222-2222-2222-2222,2021A
+2,Student 2,2020-02-02,1,Course 1,1111-1111-1111-1111,2021A
+2,Student 2,2020-02-02,2,Course 2,2222-2222-2222-2222,2021A
+2,Student 2,2020-02-02,3,Course 3,333-3333-3333-3333,2021A

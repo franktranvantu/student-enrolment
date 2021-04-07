@@ -1,10 +1,5 @@
 package studentenrolment;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
-
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +11,7 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
   private static final Scanner SCANNER = new Scanner(System.in);
   private static final StudentDao STUDENT_DAO = new StudentDao();
   private static final CourseDao COURSE_DAO = new CourseDao();
+  private static final CSVHelper CSV_HELPER = new CSVHelper();
   private static List<StudentEnrolment> studentEnrolments = new ArrayList<>();
 
   @Override
@@ -109,19 +105,7 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
       System.out.println("Do you want to export to CSV file? Yes(Y) / No(N)");
       String choose = SCANNER.nextLine();
       if ("Y".equalsIgnoreCase(choose)) {
-        try {
-          String fileName = "all-courses-for-1-student-in-1-semester.csv";
-          String[] headers = {"Course Id", "Course Name", "Credit Number"};
-          FileWriter out = new FileWriter(fileName);
-          try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers))) {
-            for (Course course : courses) {
-              printer.printRecord(course.getId(), course.getName(), course.getCreditNumber());
-            }
-          }
-          System.out.printf("Exported report. File name is %s%n", fileName);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
+        CSV_HELPER.exportAllCoursesForSpecificStudentInSpecificSemester(courses);
       }
     }
   }
@@ -163,26 +147,9 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
       System.out.println("Do you want to export to CSV file? Yes(Y) / No(N)");
       String choose = SCANNER.nextLine();
       if ("Y".equalsIgnoreCase(choose)) {
-        try {
-          String fileName = "all-students-for-1-course-in-1-semester.csv";
-          String[] headers = {"StudentId Id", "Student Name", "Birthday"};
-          FileWriter out = new FileWriter(fileName);
-          try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers))) {
-            for (Student student : students) {
-              printer.printRecord(student.getId(), student.getName(), student.getBirthday());
-            }
-          }
-          System.out.printf("Exported report. File name is %s%n", fileName);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
+        CSV_HELPER.exportAllStudentsOfSpecificCourseInSpecificSemester(students);
       }
     }
-  }
-
-  @Override
-  public void printAllCoursesOfferedInSemester() {
-
   }
 
   @Override
@@ -199,19 +166,7 @@ public class ConsoleStudentEnrolment implements StudentEnrolmentManager {
       System.out.println("Do you want to export to CSV file? Yes(Y) / No(N)");
       String choose = SCANNER.nextLine();
       if ("Y".equalsIgnoreCase(choose)) {
-        try {
-          String fileName = "all-courses-offered-in-1-semester.csv";
-          String[] headers = {"Course Id", "Course Name", "Credit Number"};
-          FileWriter out = new FileWriter(fileName);
-          try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(headers))) {
-            for (Course course : courses) {
-              printer.printRecord(course.getId(), course.getName(), course.getCreditNumber());
-            }
-          }
-          System.out.printf("Exported report. File name is %s%n", fileName);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
+        CSV_HELPER.exportAllCoursesOfferedInSpecificSemester(courses);
       }
     }
   }

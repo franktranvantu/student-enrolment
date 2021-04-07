@@ -8,8 +8,19 @@ public class Main {
     private static final StudentEnrolmentManager ENROLMENT_MANAGER = new ConsoleStudentEnrolment();
     private static final StudentDao STUDENT_DAO = new StudentDao();
     private static final CourseDao COURSE_DAO = new CourseDao();
+    private static final CSVHelper CSV_HELPER = new CSVHelper();
 
     public static void main(String[] args) {
+        System.out.println("Do you want to load enrolments from any file or not? Yes(Y) / No(N)");
+        String c = SCANNER.nextLine();
+        String fileName;
+        if ("Y".equalsIgnoreCase(c)) {
+            System.out.print("Enter file name: ");
+            fileName = SCANNER.nextLine();
+        } else {
+            fileName = "default.csv";
+        }
+        CSV_HELPER.loadEnrolments(fileName);
         int choose;
         do {
             System.out.println("============================== Student Enrollment Program =========================");
